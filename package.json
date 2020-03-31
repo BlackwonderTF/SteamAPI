@@ -1,0 +1,26 @@
+{
+  "name": "steamapicontroller",
+  "version": "1.0.0",
+  "description": "A controller that handles connections with the steam api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlackwonderTF/SteamAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BlackwonderTF/SteamAPI/issues"
+  },
+  "homepage": "https://github.com/BlackwonderTF/SteamAPI#readme",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}
