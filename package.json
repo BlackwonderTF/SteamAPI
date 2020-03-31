@@ -1,6 +1,6 @@
 {
   "name": "steamapicontroller",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A controller that handles connections with the steam api",
   "main": "index.js",
   "scripts": {
