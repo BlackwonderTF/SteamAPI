@@ -1,6 +1,6 @@
 {
   "name": "steamapicontroller",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A controller that handles connections with the steam api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,9 +20,11 @@
   "homepage": "https://github.com/BlackwonderTF/SteamAPI#readme",
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/steamid": "^1.1.0",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.19.2",
+    "steamid": "^1.1.3"
   }
 }

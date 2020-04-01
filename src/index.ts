@@ -1,4 +1,5 @@
 import axios from 'axios'
+import SteamID from 'steamid'
 
 /**
  * @public
@@ -132,5 +133,27 @@ export module SteamAPIController {
     } else {
       throw 'Could not reach the VanityURL API'
     }
+  }
+
+  export function getSteamID(url: string) {
+    let steamID: SteamID
+
+    const profilesRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/profiles\//
+    const customRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/id\//
+
+    if (url.match(profilesRegex) || url.match(customRegex)) {
+      url = url
+        .replace(profilesRegex, '')
+        .replace(customRegex, '')
+        .replace('/', '')
+    }
+
+    try {
+      steamID = new SteamID(url)
+    } catch (error) {
+      throw error
+    }
+
+    return steamID
   }
 }
