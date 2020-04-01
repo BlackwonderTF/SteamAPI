@@ -1,12 +1,13 @@
 {
   "name": "steamapicontroller",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A controller that handles connections with the steam api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "pre": "tsc && npm version patch"
+    "prepare": "tsc",
+    "prepublishOnly": "tsc"
   },
   "repository": {
     "type": "git",
