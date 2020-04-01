@@ -1,6 +1,8 @@
 import axios from 'axios'
 import SteamID from 'steamid'
 
+type SteamIDResolvable = string | SteamID
+
 /**
  * @public
  * @steamid 64bit SteamID of the user
@@ -92,13 +94,28 @@ export module SteamAPIController {
     LOOKING_TO_PLAY = 6
   }
 
-  export async function getPlayerSummaries(...targets: string[]) {
+  export async function getPlayerSummaries(...targets: SteamIDResolvable[]) {
     if (targets.length > 100) {
-      throw 'Only 100 steamIDs can be requested at a time!'
+      throw new Error('Only 100 steamIDs can be requested at a time!')
+    }
+
+    let steamIDs: string[] = []
+    for (let i = 0; i < targets.length; i++) {
+      const element = targets[i]
+      if (element instanceof SteamID) {
+        steamIDs[i] = element.getSteamID64()
+      } else {
+        try {
+          let steamID = new SteamID(element)
+          steamIDs[i] = steamID.getSteamID64()
+        } catch (error) {
+          throw error
+        }
+      }
     }
 
     try {
-      let requestURL = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${targets}`
+      let requestURL = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${apiKey}&steamids=${steamIDs}`
       let response = <PlayerSummaryResponse>await axios.get(requestURL)
 
       let returnArray: PlayerSummary[] = []
@@ -126,7 +143,7 @@ export module SteamAPIController {
     if (response) {
       const steamID = response.data.response.steamid
       if (steamID) {
-        return steamID
+        return new SteamID(steamID)
       } else {
         throw 'Not a valid SteamID'
       }
@@ -135,9 +152,7 @@ export module SteamAPIController {
     }
   }
 
-  export function getSteamID(url: string) {
-    let steamID: SteamID
-
+  function resolveURL(url: string) {
     const profilesRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/profiles\//
     const customRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/id\//
 
@@ -147,9 +162,41 @@ export module SteamAPIController {
         .replace(customRegex, '')
         .replace('/', '')
     }
+    return url
+  }
+
+  export function getSteamID(url: string) {
+    let steamID: SteamID
+
+    url = resolveURL(url)
 
     try {
       steamID = new SteamID(url)
+    } catch (error) {
+      throw error
+    }
+
+    return steamID
+  }
+
+  /**
+   * Async version of getSteamID that also checks for custom vanity url.
+   * @param steamResolvable A string that can be resolved to a SteamID
+   * @async Async version of getSteamID
+   */
+  export async function getSteamIDAsync(steamResolvable: string) {
+    let steamID: SteamID
+
+    steamResolvable = resolveURL(steamResolvable)
+
+    steamResolvable = await resolveVanityUrl(steamResolvable)
+      .then(sid => sid.getSteamID64())
+      .catch(() => {
+        return steamResolvable
+      })
+
+    try {
+      steamID = new SteamID(steamResolvable)
     } catch (error) {
       throw error
     }
