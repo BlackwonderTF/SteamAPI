@@ -152,7 +152,7 @@ export module SteamAPIController {
     }
   }
 
-  function resolveURL(url: string) {
+  export function resolveURL(url: string) {
     const profilesRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/profiles\//
     const customRegex = /http[s]{0,1}:\/\/steamcommunity\.com\/id\//
 
