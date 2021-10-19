@@ -1,6 +1,6 @@
 {
   "name": "steamapicontroller",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A controller that handles connections with the steam api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,10 +22,10 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/steamid": "^1.1.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.10"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "steamid": "^1.1.3"
   }
 }

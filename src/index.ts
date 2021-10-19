@@ -261,6 +261,16 @@ export module SteamAPIController {
     return steamID
   }
 
+  export function isValidSteamID(steamIDToCheck: string) {
+    try {
+      new SteamID(steamIDToCheck)
+    } catch (error) {
+      return false
+    }
+
+    return true
+  }
+
   /**
    * Async version of getSteamID that also checks for custom vanity url.
    * @param steamResolvable A string that can be resolved to a SteamID
@@ -268,6 +278,11 @@ export module SteamAPIController {
    */
   export async function getSteamIDAsync(steamResolvable: string) {
     let steamID: SteamID
+
+    if (isValidSteamID(steamResolvable)) {
+      steamID = new SteamID(steamResolvable)
+      return steamID
+    }
 
     steamResolvable = resolveURL(steamResolvable)
 
