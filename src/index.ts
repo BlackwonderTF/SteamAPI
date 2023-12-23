@@ -69,7 +69,7 @@ export type PlayerBans = {
   NumberOfVACBans: number
   DaysSinceLastBan: number
   NumberOfGameBans: number
-  EconomyBan: string
+  EconomyBan: SteamAPIController.EconomyBan
 }
 
 type PlayerSummaryResponse = {
@@ -112,6 +112,13 @@ export module SteamAPIController {
     LOOKING_TO_TRADE = 5,
     LOOKING_TO_PLAY = 6,
   }
+
+  export enum EconomyBan {
+    NONE = 'none',
+    PROBATION = 'probation',
+    BANNED = 'banned',
+  }
+
 
   /**
    * Call the GetPlayerSummaries steam API and do some checks.
