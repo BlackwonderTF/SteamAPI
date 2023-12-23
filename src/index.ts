@@ -74,15 +74,15 @@ export type PlayerBans = {
 
 type PlayerSummaryResponse = {
   data: {
-    players?: PlayerSummary[]
+    response: {
+      players?: PlayerSummary[]
+    }
   }
 }
 
 type PlayerBansResponse = {
   data: {
-    response: {
-      players?: PlayerBans[]
-    }
+    players?: PlayerBans[]
   }
 }
 
@@ -160,7 +160,7 @@ export module SteamAPIController {
       let returnArray: PlayerSummary[] = []
 
       if (response) {
-        let dataArray = response.data.players
+        let dataArray = response.data.response.players
         if (dataArray && dataArray.length) {
           for (let index = 0; index < dataArray.length; index++) {
             const data = dataArray[index]
@@ -197,7 +197,7 @@ export module SteamAPIController {
       let returnArray: PlayerBans[] = []
 
       if (response) {
-        let dataArray = response.data.response.players
+        let dataArray = response.data.players
         if (dataArray && dataArray.length) {
           for (let index = 0; index < dataArray.length; index++) {
             const data = dataArray[index]
