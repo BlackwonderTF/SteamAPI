@@ -80,6 +80,14 @@ type PlayerSummaryResponse = {
   }
 }
 
+type PlayerBansResponse = {
+  data: {
+    response: {
+      players?: PlayerBans[]
+    }
+  }
+}
+
 type VanityURLResponse = {
   data: {
     response: {
@@ -185,14 +193,13 @@ export module SteamAPIController {
       let requestURL = `http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${apiKey}&steamids=${steamIDs.join(
         ','
       )}`
-      let response: {
-        players: PlayerBans[]
-      } = await axios.get(requestURL)
+  
+      let response = <PlayerBansResponse>await axios.get(requestURL)
 
       let returnArray: PlayerBans[] = []
 
       if (response) {
-        let dataArray = response.players
+        let dataArray = response.data.response.players
         if (dataArray && dataArray.length) {
           for (let index = 0; index < dataArray.length; index++) {
             const data = dataArray[index]
