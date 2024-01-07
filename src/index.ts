@@ -30,7 +30,7 @@ type SteamIDResolvable = string | SteamID
  * @gameserversteamid The steamid of the server.
  * @gameextrainfo If the user is currently in-game, this will be the name of the game they are playing. This may be the name of a non-Steam game shortcut.
  */
-export type PlayerSummary = {
+export type PlayerSummaryAPI = {
   steamid: string //
   communityvisibilitystate: SteamAPIController.CommunityVisibility
   profilestate: boolean
@@ -53,6 +53,8 @@ export type PlayerSummary = {
   gameextrainfo?: string
 }
 
+export type PlayerSummary = PlayerSummaryAPI;
+
 /**
  * @SteamId (string) The player's 64 bit ID.
  * @CommunityBanned (bool) Indicates whether or not the player is banned from Steam Community.
@@ -62,7 +64,7 @@ export type PlayerSummary = {
  * @NumberOfGameBans (int) Number of bans in games, this includes CS:GO Overwatch bans.
  * @EconomyBan (string) The player's ban status in the economy. If the player has no bans on record the string will be "none", if the player is on probation it will say "probation", etc.
  */
-export type PlayerBans = {
+export type PlayerBansAPI = {
   SteamId: string
   CommunityBanned: boolean
   VACBanned: boolean
@@ -72,17 +74,27 @@ export type PlayerBans = {
   EconomyBan: SteamAPIController.EconomyBan
 }
 
+export type PlayerBans = {
+  steamid: string
+  communitybanned: boolean
+  vacbanned: boolean
+  numberofvacbans: number
+  dayssincevacban: number
+  numberofgamebans: number
+  economyban: SteamAPIController.EconomyBan
+}
+
 type PlayerSummaryResponse = {
   data: {
     response: {
-      players?: PlayerSummary[]
+      players?: PlayerSummaryAPI[]
     }
   }
 }
 
 type PlayerBansResponse = {
   data: {
-    players?: PlayerBans[]
+    players?: PlayerBansAPI[]
   }
 }
 
@@ -201,7 +213,15 @@ export module SteamAPIController {
         if (dataArray && dataArray.length) {
           for (let index = 0; index < dataArray.length; index++) {
             const data = dataArray[index]
-            returnArray.push(data)
+            returnArray.push({
+              steamid: data.SteamId,
+              communitybanned: data.CommunityBanned,
+              vacbanned: data.VACBanned,
+              numberofvacbans: data.NumberOfVACBans,
+              dayssincevacban: data.DaysSinceLastBan,
+              numberofgamebans: data.NumberOfGameBans,
+              economyban: data.EconomyBan,
+            })
           }
         }
       }
