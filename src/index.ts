@@ -56,6 +56,23 @@ export type PlayerSummaryAPI = {
 export type PlayerSummary = PlayerSummaryAPI;
 
 /**
+ * @steamId (string) The player's 64 bit ID.
+ * @relationship (string) The relationship of the player to the given steamid. Possible values: "all", "friend".
+ * @friend_since (int) The time the player became friends with the given steamid.
+ */
+export type PlayerFriendsAPI = {
+  steamid: string
+  relationship: string
+  friend_since: number
+}
+
+export type PlayerFriends = {
+  steamid: string
+  relationship: string
+  friendsince: number
+};
+
+/**
  * @SteamId (string) The player's 64 bit ID.
  * @CommunityBanned (bool) Indicates whether or not the player is banned from Steam Community.
  * @VACBanned (bool) Indicates whether or not the player has VAC bans on record.
@@ -187,6 +204,48 @@ export module SteamAPIController {
     }
   }
 
+  /**
+   * Call the GetPlayerFriends steam API and do some checks.
+   * @param target The steamID resolvable that will be looked through.
+   */
+  export async function GetPlayerFriends(target: SteamIDResolvable) {
+    let steamID: string
+    try {
+      steamID = SteamIDResolvablesToSteamID64(target)[0]
+    } catch (error) {
+      throw error
+    }
+
+    try {
+      let requestURL = `http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${apiKey}&steamid=${steamID}&relationship=friend`
+      let response = <{ data: { friendslist: { friends: PlayerFriendsAPI[] } } }>await axios.get(requestURL)
+
+      let returnArray: PlayerFriends[] = []
+
+      if (response) {
+        let dataArray = response.data.friendslist.friends
+        if (dataArray && dataArray.length) {
+          for (let index = 0; index < dataArray.length; index++) {
+            const data = dataArray[index]
+            returnArray.push({
+              steamid: data.steamid,
+              relationship: data.relationship,
+              friendsince: data.friend_since,
+            })
+          }
+        }
+      }
+
+      return returnArray
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Call the GetPlayerBans steam API and do some checks.
+   * @param targets All steamID resolvables that will be looked through, limit of 100.
+   */
   export async function GetPlayerBans(...targets: SteamIDResolvable[]) {
     if (targets.length > 100) {
       throw new Error('Only 100 steamIDs can be requested at a time!')
