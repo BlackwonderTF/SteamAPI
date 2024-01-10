@@ -375,16 +375,18 @@ export module SteamAPIController {
       return steamID
     }
 
-    steamResolvable = resolveURL(steamResolvable)
+    const url = resolveURL(steamResolvable)
 
-    steamResolvable = await resolveVanityUrl(steamResolvable)
-      .then((sid) => sid.getSteamID64())
-      .catch(() => {
-        return steamResolvable
-      })
+    let sidString: string;
+    try {
+      const sid = await resolveVanityUrl(url)
+      sidString = sid.getSteamID64();
+    } catch (error) {
+      return steamResolvable
+    }
 
     try {
-      steamID = new SteamID(steamResolvable)
+      steamID = new SteamID(sidString)
     } catch (error) {
       throw error
     }
